@@ -7,7 +7,7 @@
  *  POST: Devuelve un arbol para cual se reservó la memoria necesaria de manera exitosa.
  */
 abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
-    abb_t* abb = calloc(1, sizeof(abb_t));
+    abb_t* abb = calloc(1, sizeof(abb_t)); // Reservo memoria
     if(!abb)
         return NULL;
     abb->comparador = comparador;
@@ -23,20 +23,20 @@ abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
  */
 nodo_abb_t* arbol_insertar_elemento(abb_t* arbol, nodo_abb_t* nodo, void* elemento){
     if(!nodo){
-        nodo_abb_t* nodo_aux = calloc(1, sizeof(nodo_abb_t));
+        nodo_abb_t* nodo_aux = calloc(1, sizeof(nodo_abb_t)); // Reservo la memoria para un nuevo nodo.
         if(!nodo_aux){
             free(nodo_aux);
             printf("%s\n", ERROR_MEMORIA);
             return NULL;
         }
         nodo = nodo_aux;
-        nodo->elemento = elemento;
+        nodo->elemento = elemento;  // Le asigno el elemento correspondiente.
         nodo->izquierda = NULL;
         nodo->derecha = NULL;
         return nodo;
     }
     if(arbol->comparador(elemento, nodo->elemento) >= 0){
-        nodo->derecha = arbol_insertar_elemento(arbol, nodo->derecha, elemento); 
+        nodo->derecha = arbol_insertar_elemento(arbol, nodo->derecha, elemento); // Recorro el arbol hasta encontrar donde insertarlo
         return nodo;
     }
     else{
@@ -51,7 +51,7 @@ nodo_abb_t* arbol_insertar_elemento(abb_t* arbol, nodo_abb_t* nodo, void* elemen
 int arbol_insertar(abb_t* arbol, void* elemento){
     if(!arbol) return -1;
     if(!arbol->nodo_raiz){
-        nodo_abb_t* nodo_aux = calloc(1, sizeof(nodo_abb_t));
+        nodo_abb_t* nodo_aux = calloc(1, sizeof(nodo_abb_t)); // Si el arbol esta vacio, le creo el nodo raiz
         if(!nodo_aux){
             free(nodo_aux);
             printf("%s\n", ERROR_MEMORIA);
@@ -74,7 +74,7 @@ void* arbol_buscar_elemento(abb_t* arbol, nodo_abb_t* nodo, void* elemento){
 	if(!nodo){
 		return NULL;
 	}
-	if(arbol->comparador(nodo->elemento, elemento) == 0){
+	if(arbol->comparador(nodo->elemento, elemento) == 0){  // Encontré mi elemento.
 		return nodo->elemento;
 	}
 	if(arbol->comparador(nodo->elemento, elemento) > 0){
@@ -97,15 +97,10 @@ void* arbol_buscar(abb_t* arbol, void* elemento){
 }
 
 
-/*nodo_abb_t* busco_al_nuevo_padre(nodo_abb_t* nodo, nodo_abb_t* nodo_aux){
-    if(nodo->izquierda && (nodo->izquierda != nodo_aux)){
-            nodo = nodo->izquierda;
-        while(nodo->derecha && (nodo->derecha != nodo_aux)){
-            nodo = nodo->derecha;
-        }
-    }
-    return nodo;
-}*/
+/*
+ * PRE: Recibe el nodo a partir del cual se comienza a buscar.
+ * POST: Devuelve el nodo que se encuentre más a la derecha de todos.
+*/
 
 nodo_abb_t* el_mayor_de_los_menores(nodo_abb_t* nodo){
     if(!nodo)
@@ -116,7 +111,10 @@ nodo_abb_t* el_mayor_de_los_menores(nodo_abb_t* nodo){
         return nodo;
     }
 }
-
+/*
+ * PRE: Recibe por parametro el arbol, el elemento y el nodo que se pretende borrar.
+ * POST: Lo elimina recursivamente respetando las condiciones del ABB.
+ */
 nodo_abb_t* arbol_borrar_elemento(abb_t* arbol, nodo_abb_t* nodo, void* elemento){
     if(!nodo){
             return NULL;
@@ -137,7 +135,7 @@ nodo_abb_t* arbol_borrar_elemento(abb_t* arbol, nodo_abb_t* nodo, void* elemento
             nodo->elemento = menor->elemento; // Reemplazo con el mayor de los menores. 
             menor->elemento = auxiliar_elemento; // Apunto el menor al que se busca borrar.
             
-            arbol_borrar_elemento(arbol, nodo->izquierda, elemento);
+            nodo->izquierda = arbol_borrar_elemento(arbol, nodo->izquierda, elemento);
         }
         else{
             nodo_abb_t* nuevo_nodo = nodo->derecha? nodo->derecha : nodo->izquierda; // Si tiene un solo hijo o reemplazo por ese.
@@ -312,6 +310,9 @@ size_t* inorden_con_cada_elemento(nodo_abb_t* nodo, bool* terminar, bool (*funci
     
     if(nodo && !(*terminar)){
         inorden_con_cada_elemento(nodo->izquierda, terminar, funcion, extra, cantidad); 
+        if((*terminar)){
+            return cantidad;
+        }
         (*terminar) = funcion(nodo->elemento, extra);
         (*cantidad)++;      
 
@@ -326,29 +327,44 @@ size_t* preorden_con_cada_elemento(nodo_abb_t* nodo, bool* terminar, bool (*func
         (*cantidad)++;
 
         preorden_con_cada_elemento(nodo->izquierda, terminar, funcion, extra, cantidad);
+        if((*terminar)){
+            return cantidad;
+        }
         preorden_con_cada_elemento(nodo->derecha, terminar, funcion, extra, cantidad);
         
     }
     return cantidad;
 }
+
 size_t* postorden_con_cada_elemento(nodo_abb_t* nodo, bool* terminar, bool (*funcion)(void*, void*), void* extra, size_t* cantidad){
     if(nodo && !(*terminar)){
 
         postorden_con_cada_elemento(nodo->izquierda, terminar, funcion, extra, cantidad);
+        if((*terminar)){
+            return cantidad;
+        }
         postorden_con_cada_elemento(nodo->derecha, terminar, funcion, extra, cantidad);
+        if((*terminar)){
+            return cantidad;
+        }
 
         (*terminar) = funcion(nodo->elemento, extra);
         (*cantidad)++;
+
     }
 
     return cantidad;
-
 }
+/*
+ * PRE: Recibe por parametro el arbol, el tipo de recorrido, una función del tipo booleana y un void* extra que se le pasará 
+ *      como parametro de la función.
+ * POST: Devuelve la cantidad de elementos evaluados y recorridos sefun el tipo indicado.
+ */
 size_t abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*, void*), void* extra){
-    if(!arbol || funcion == NULL || !arbol->nodo_raiz)
+    if(!arbol || funcion == NULL)
         return 0;
     
-    size_t cantidad = 0; // Voy a recorrer por lo menos 1 elemento
+    size_t cantidad = 0;
     bool terminar = false;
 
     if(recorrido == ABB_RECORRER_INORDEN){

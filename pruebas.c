@@ -337,14 +337,13 @@ void porbar_iterador(){
 
 	paloma_t paloma_buscada = {12, 1};
 	paloma_t paloma_buscada1 = {3, 14};
-	//paloma_t paloma_buscada2 = {4, 5};
-	//paloma_t paloma_buscada3 = {15, 5};
+
 
 	size_t total_inorden = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, es_mas_peluda, &paloma_buscada);
 	pa2m_afirmar(total_inorden == 8, "Recorri la cantidad correcta de elementos inorden.");
 
 	size_t total_inorden1 = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, es_mas_peluda, &paloma_buscada1);
-	pa2m_afirmar(total_inorden1 == 7, "Recorri la cantidad correcta de elementos inorden.");
+	pa2m_afirmar(total_inorden1 == 1, "Recorri la cantidad correcta de elementos inorden.");
 
 	size_t total_preorden = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, es_mas_peluda, &paloma_buscada);
 	
