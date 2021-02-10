@@ -183,12 +183,15 @@ void probar_borrar_raiz(){
 
 	arbol_borrar(abb, abb->nodo_raiz->elemento);
 	pa2m_afirmar(arbol_raiz(abb) != &una_paloma, "Puedo borrar la raiz");
+	pa2m_afirmar(arbol_raiz(abb) == &paloma2, "Queda la paloma correcta");
 
 	arbol_borrar(abb, abb->nodo_raiz->elemento);
 	pa2m_afirmar(arbol_raiz(abb) != &paloma2, "Puedo borrar la raiz");
+	pa2m_afirmar(arbol_raiz(abb) == &paloma13, "Queda la paloma correcta");
 
-	//arbol_borrar(abb, abb->nodo_raiz->elemento);
+	arbol_borrar(abb, abb->nodo_raiz->elemento);
 	pa2m_afirmar(arbol_raiz(abb) != &paloma13, "Puedo borrar la raiz");
+	pa2m_afirmar(arbol_raiz(abb) == &otra_paloma, "Queda la paloma correcta");
 
 	arbol_destruir(abb);
 }
@@ -332,19 +335,20 @@ void porbar_iterador(){
 	arbol_insertar(abb, &paloma3);
 	arbol_insertar(abb, &paloma4);
 
-	paloma_t paloma_buscada = {12, 48};
-	paloma_t paloma_buscada1 = {3, 5};
+	paloma_t paloma_buscada = {12, 1};
+	paloma_t paloma_buscada1 = {3, 14};
 	//paloma_t paloma_buscada2 = {4, 5};
 	//paloma_t paloma_buscada3 = {15, 5};
 
 	size_t total_inorden = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, es_mas_peluda, &paloma_buscada);
-	pa2m_afirmar(total_inorden == 7, "Recorri la cantidad correcta de elementos inorden.");
+	pa2m_afirmar(total_inorden == 8, "Recorri la cantidad correcta de elementos inorden.");
 
 	size_t total_inorden1 = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, es_mas_peluda, &paloma_buscada1);
-	pa2m_afirmar(total_inorden1 == 3, "Recorri la cantidad correcta de elementos inorden.");
+	pa2m_afirmar(total_inorden1 == 7, "Recorri la cantidad correcta de elementos inorden.");
 
 	size_t total_preorden = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, es_mas_peluda, &paloma_buscada);
-	pa2m_afirmar(total_preorden == 7, "Recorri la cantidad correcta de elementos preorden.");
+	
+	pa2m_afirmar(total_preorden == 8, "Recorri la cantidad correcta de elementos preorden.");
 
 	size_t total_preorden1 = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, es_mas_peluda, &paloma_buscada1);
 	pa2m_afirmar(total_preorden1 == 2, "Recorri la cantidad correcta de elementos preorden.");
@@ -369,7 +373,7 @@ int main(){
 	probar_borrar_abb();
 
 	pa2m_nuevo_grupo("BORRAR RAIZ");
-	//probar_borrar_raiz();
+	probar_borrar_raiz();
 
 	pa2m_nuevo_grupo("RECORRER INORDEN");
 	probar_inorden();
